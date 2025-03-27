@@ -1,0 +1,178 @@
+# Copyright (c) 2020, Oracle and/or its affiliates. All rights reserved.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+title: "Create a VCN in Oracle Cloud Infrastructure including default route table, DHCP options and subnets"
+stackDescription: ${Messages.solutionsHub.solutions.defaultVCN.stackDescription()}
+schemaVersion: 1.1.0
+version: "20200301"
+locale: "en"
+
+variableGroups:
+- title: ${Messages.solutionsHub.generalConfig()}
+  visible: false
+  variables:
+  - compartment_ocid
+  - tenancy_ocid
+  - region
+
+- title: ${Messages.solutionsHub.optionalConfig()}
+  visible: true  
+  variables:
+  - vcn_cidr
+  - vcn_dns_label
+
+- title: Complex Types
+  visible: true
+  variables: 
+  - team_info
+  - regionMap
+  - numberMap
+  - booleanMap
+  - arrayMap
+  - enumMap
+  - newMap
+
+variables:
+  team_info:
+    type: map
+    valueType: teamCity
+    required: true
+    title: "Complex Map Type Variable"
+    description: "A map where each team has an associated city"
+    default: "{\"Lakers\": \"Los Angeles\", \"Celtics\": \"Boston\", \"Warriors\": \"San Francisco\"}"
+  
+  teamCity: 
+    type: string
+    actualName: City
+    required: true
+    visible: false
+    description: "Value Type = City for the Map type variable"
+  
+  regionMap:
+    type: map
+    valueType: myRegion
+    required: true
+    title: "Map of Regions"
+    default: "{\"PHX\": \"us-phoenix-1\", \"IAD\": \"us-ashburn-1\"}"
+  
+  myRegion:
+    actualName: Region
+    required: true
+    type: oci:identity:region:name
+    visible: false
+
+
+  booleanMap:
+    type: map
+    valueType: isEmployed
+    required: true
+    title: "Boolean Map"
+    default: "{\"employee1\": \"false\", \"employee2\": \"true\"}"
+  
+  isEmployed: 
+    actualName: Employed
+    visible: false
+    type: boolean
+    required: true
+
+
+  numberMap: 
+    type: map
+    required: true
+    valueType: experience
+    title: "Number Map"
+    default: "{\"employee1\": 3, \"employee2\": 22}"
+  
+  experience:
+    actualName: YOE
+    type: number
+    required: true
+    visible: false
+
+  arrayMap:
+    type: map
+    required: true
+    valueType: dnsServers
+    title: "Servers Map"
+    default: "{\"DNS_Servers\":[\"8.8.8.8\",\"8.8.4.4\"]}" 
+
+  dnsServers:
+    type: array
+    actualName: DNS_Servers
+    required: true
+    visible: false
+    items:
+      type: string
+      pattern: "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"
+    minItems: 1
+    uniqueItems: true
+
+  enumMap:
+    type: map
+    required: true
+    valueType: attachment_type2
+    title: "Enum Map"
+    default: "{\"Attachment\":[\"iscsi\"]}"
+    
+
+  attachment_type2:
+      type: enum
+      visible: false
+      actualName: "Attachment"
+      required: true
+      additionalProps:
+        allowMultiple: true
+      # enumerated values (multiple value selection)
+      enum:
+        - "iscsi"
+        - "paravirtualized"
+
+  newMap:
+    type: map
+    required: true
+    valueType: compute_instance
+    title: "ComputeInstanceMap"
+    description: "A map of compute Instances"
+    default: "{\"Instance1\": {\"display_name\" :\"VM Instance1\", \"shape\" :\"BM.Standard.E2.64\"}}"
+
+  compute_instance: 
+    type: object
+    required: true
+    visible: false
+    title: "ComputeInstanceMap"
+    actualName: Compute Instance
+    description: "Details for the <strong>compute instance</strong> in <br/> <em>italics </em>"
+    attributes: 
+      - instance_display_name
+      - instance_shape
+
+
+  instance_display_name: 
+    type: string 
+    actualName: display_name
+    required: true
+    description: Details for the <strong>compute instance</strong> in <em><strong>italics</strong></em> <a href='https://www.google.com'>check Google</a>
+    visible: false
+  instance_shape: 
+    required: true
+    type: oci:core:instanceshape:name	
+    actualName: "shape"
+    description: "Instance shape"
+    visible: false
+    dependsOn:
+      compartmentId: ${compartment_ocid}
+
+  compartment_ocid:
+    type: oci:identity:compartment:id
+    actualName: "compartment_id"
+    required: true
+    title: ${Messages.solutionsHub.genericVariables.compartment.title()}
+    description: ${Messages.solutionsHub.genericVariables.compartment.description()}
+
+  region:
+    type: oci:identity:region:name
+    required: true
+    title: ${Messages.solutionsHub.genericVariables.region.title()}
+    description: ${Messages.solutionsHub.genericVariables.region.description()}
+
+
