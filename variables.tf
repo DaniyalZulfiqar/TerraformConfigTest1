@@ -10,3 +10,10 @@
       tenancy_ocid     = var.tenancy_ocid
       region           = var.region
     }
+    variable "team_info" {}
+    variable "regionMap" {}
+    variable "numberMap" {}
+    variable "booleanMap" {}
+    variable "arrayMap" {}
+    variable "enumMap" {}
+    variable "newMap" {}
