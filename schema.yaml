@@ -35,6 +35,7 @@ variableGroups:
 variables:
   team_info:
     type: map
+    sensitive: true
     valueType: teamCity
     required: true
     title: "Complex Map Type Variable"
@@ -79,6 +80,7 @@ variables:
   numberMap: 
     type: map
     required: true
+    sensitive: true
     valueType: experience
     title: "Number Map"
     default: "{\"employee1\": 3, \"employee2\": 22}"
@@ -98,6 +100,7 @@ variables:
 
   dnsServers:
     type: array
+    sensitive: true
     actualName: DNS_Servers
     required: true
     visible: false
