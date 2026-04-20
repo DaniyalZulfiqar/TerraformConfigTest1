@@ -1,11 +1,9 @@
 terraform {
+  required_version = ">= 1.5.0"
   required_providers {
+    # Recommendation from ORM / OCI provider teams
     oci = {
-      source = "hashicorp/oci"
-    }
-    template = {
-      source = "hashicorp/template"
+      version =">= 4.21.0"
     }
   }
-  required_version = ">= 0.13"
 }

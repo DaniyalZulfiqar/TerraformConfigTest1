@@ -1,72 +1,81 @@
+/*
+* Copyright (c) 2020, 2023, Oracle and/or its affiliates. 
+*
+* Main modules' outputs are defined here, currently ports are fixed, we can use custom values later on
+*/
 
-    // Copyright (c) 2020, Oracle and/or its affiliates. All rights reserved.
-    // Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-    
-    output "vcn_id" {
-      description = "OCID of created VCN. "
-      value       = oci_core_vcn.this.id
-    }
-    
-    output "default_security_list_id" {
-      description = "OCID of default security list. "
-      value       = oci_core_vcn.this.default_security_list_id
-    }
-    
-    output "default_dhcp_options_id" {
-      description = "OCID of default DHCP options. "
-      value       = oci_core_vcn.this.default_dhcp_options_id
-    }
-    
-    output "default_route_table_id" {
-      description = "OCID of default route table. "
-      value       = oci_core_vcn.this.default_route_table_id
-    }
-    
-    output "internet_gateway_id" {
-      description = "OCID of internet gateway. "
-      value       = oci_core_internet_gateway.this.id
-    }
-    
-    output "subnet_ids" {
-      description = "ocid of subnet ids. "
-      value       = oci_core_subnet.this.*.id
-    }
-    
- 
-    output "public-ip-for-compute-instance" {
-      value = oci_core_instance.test_instance.public_ip
-    }
+locals {
+  instance_ip     = local.is_public_subnet ? oci_core_instance.simple-vm.public_ip : oci_core_instance.simple-vm.private_ip
+  app_url         = format("https://%s:%s/spatialstudio", local.instance_ip, var.console_ssl_port)
+  app_http_url    = var.https_only ? "disabled" : format("http://%s:%s/spatialstudio", local.instance_ip, var.console_port)
+}
 
-    output "instance-name" {
-      value = oci_core_instance.test_instance.display_name
-    }
- 
-    output "instance-OCID" {
-      value = oci_core_instance.test_instance.id
-    }
+###
+# compute.tf outputs
+###
 
-    output "instance-region" {
-      value = oci_core_instance.test_instance.region
-    }
- 
-    output "instance-shape" {
-      value = oci_core_instance.test_instance.shape
-    }
-    
-    output "instance-state" {
-      value = oci_core_instance.test_instance.state
-    }
-    
-    output "instance-OCPUs" {
-      value = oci_core_instance.test_instance.shape_config[0].ocpus
-    }
-    
-    output "instance-memory-in-GBs" {
-      value = oci_core_instance.test_instance.shape_config[0].memory_in_gbs
-    }
-    
-    output "time-created" {
-      value = oci_core_instance.test_instance.time_created
-    }
+output "instance_id" {
+  value = oci_core_instance.simple-vm.id
+}
 
- 
+output "instance_name" {
+  value = oci_core_instance.simple-vm.display_name
+}
+
+output "instance_public_ip" {
+  value = oci_core_instance.simple-vm.public_ip
+}
+
+output "instance_private_ip" {
+  value = oci_core_instance.simple-vm.private_ip
+}
+
+output "instance_https_url" {
+  value = local.app_url
+}
+
+output "instance_http_url" {
+  value = local.app_http_url
+}
+
+###
+# network.tf outputs
+###
+
+output "vcn_id" {
+  value = ! local.use_existing_network ? join("", oci_core_vcn.simple.*.id) : var.existing_vcn_id
+}
+
+output "subnet_id" {
+  value = ! local.use_existing_network ? join("", oci_core_subnet.simple_subnet.*.id) : var.subnet_id
+}
+
+###
+# database.tf outputs
+###
+
+output "adb_password" {
+  value = local.adb_strategy == "NEW_ADB" ? random_string.autonomous_database_admin_password.result : ""
+  sensitive = true
+}
+
+output "adb_id" {
+  value = local.adb_strategy == "NEW_ADB" ? oci_database_autonomous_database.autonomous_database[0].id : local.adb_id
+}
+
+###
+# Comments
+###
+
+output "certificates_note" {
+  value = "To configure your HTTPS certificate, see https://www.eclipse.org/jetty/documentation/jetty-9/index.html#loading-keys-and-certificates."
+}
+
+output "comments" {
+  value = "Please wait 2-3 minutes after the deployment job has succeded before launching Spatial Studio"
+}
+
+output "idcs" {
+  value = "After deployment you may configure Spatial Studio to use IDCS as its authentication provider. Please see https://docs.oracle.com/en/database/oracle/spatial-studio/23.1/spstu/administering-spatial-studio.html#GUID-F4F828D8-CB70-43E6-92CB-AE4FBC10C479"
+}
+
