@@ -11,7 +11,7 @@ variableGroups:
 
 variables: 
   gmo_source_cidrs:
-    type: string
+    type: array
     title: gmo_source_cidrs
     description: Enter IP address with block here
     items:
