@@ -14,8 +14,8 @@ variables:
     type: string
     title: gmo_source_cidrs
     description: Enter IP address with block here
-    # items:
-    #  type: string
-    # minItems : 1
-    # uniqueItems : true
+    items:
+      type: string
+    minItems : 1
+    uniqueItems : true
     required: true
