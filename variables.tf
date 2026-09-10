@@ -1,4 +1,4 @@
 variable "gmo_source_cidrs" {
   description = "Synthetic CIDR for testing"
-  type = list(string)
+  type = string
 }
