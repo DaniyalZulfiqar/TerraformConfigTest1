@@ -1,0 +1,41 @@
+title: "Stack State Test"
+description: "Create null resources to test Terraform state additions, removals, replacements, and output changes."
+schemaVersion: 1.1.0
+version: "1.0.0"
+locale: "en"
+allowViewState: true
+
+variableGroups:
+  - title: "State test controls"
+    variables:
+      - instance_count
+      - enable_optional
+      - replacement_token
+      - output_note
+
+variables:
+  instance_count:
+    type: integer
+    title: "Indexed resource count"
+    description: "Create 0 to 20 indexed null resources, in addition to the baseline and optional resource."
+    default: 3
+    minimum: 0
+    maximum: 20
+    multipleOf: 1
+    required: true
+  enable_optional:
+    type: boolean
+    title: "Create optional resource"
+    description: "Disable and Apply to remove the optional resource from state."
+    default: true
+  replacement_token:
+    type: string
+    title: "Replacement token"
+    description: "Change from v1 to v2 and Apply to replace all indexed resources."
+    default: "v1"
+    required: true
+  output_note:
+    type: string
+    title: "Output note"
+    description: "Change and Apply to test an output-only state update. Use non-sensitive text."
+    default: "initial-state"
