@@ -1,0 +1,17 @@
+title: scalar-to-list bug repro
+description: Variable reconciliation test
+schemaVersion: "1.1.0"
+version: "20260910"
+locale: "en"
+
+variableGroups:
+  - title: Reproduce Input
+    variables: 
+      - gmo_source_cidrs
+
+variables: 
+  gmo_source_cidrs:
+    type: string
+    title: gmo_source_cidrs
+    description: Enter IP address with block here
+    required: true
